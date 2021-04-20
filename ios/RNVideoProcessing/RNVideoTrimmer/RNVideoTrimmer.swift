@@ -455,6 +455,7 @@ class RNVideoTrimmer: NSObject {
       let minimumBitrate = options.object(forKey: "minimumBitrate") as? Float
       let saveWithCurrentDate = options.object(forKey: "saveWithCurrentDate") as? Bool ?? false
       let removeAudio = options.object(forKey: "removeAudio") as? Bool ?? false
+      let isHighEffect = options.object(forKey: "isHighEffect") as? Bool ?? false
 
       let manager = FileManager.default
       guard let documentDirectory = try? manager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
@@ -514,7 +515,7 @@ class RNVideoTrimmer: NSObject {
         compressionEncoder!.metadata = [metaItem]
       }
       compressionEncoder?.videoSettings = [
-          AVVideoCodecKey: AVVideoCodecH264,
+        AVVideoCodecKey: isHighEffect ? AVVideoCodecHEVC : AVVideoCodecH264,
           AVVideoWidthKey: NSNumber.init(value: width!),
           AVVideoHeightKey: NSNumber.init(value: height!),
           AVVideoCompressionPropertiesKey: [
