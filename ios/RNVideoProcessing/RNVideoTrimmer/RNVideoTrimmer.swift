@@ -514,15 +514,28 @@ class RNVideoTrimmer: NSObject {
         metaItem.value = NSDate()
         compressionEncoder!.metadata = [metaItem]
       }
-      compressionEncoder?.videoSettings = [
-        AVVideoCodecKey: isHighEffect ? AVVideoCodecHEVC : AVVideoCodecH264,
-          AVVideoWidthKey: NSNumber.init(value: width!),
-          AVVideoHeightKey: NSNumber.init(value: height!),
-          AVVideoCompressionPropertiesKey: [
-              AVVideoAverageBitRateKey: NSNumber.init(value: averageBitrate),
-              AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel
-          ]
-      ]
+      if #available(iOS 11.0, *) {
+        compressionEncoder?.videoSettings = [
+            AVVideoCodecKey: isHighEffect ? AVVideoCodecHEVC : AVVideoCodecH264,
+            AVVideoWidthKey: NSNumber.init(value: width!),
+            AVVideoHeightKey: NSNumber.init(value: height!),
+            AVVideoCompressionPropertiesKey: [
+                AVVideoAverageBitRateKey: NSNumber.init(value: averageBitrate),
+                AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel
+            ]
+        ]
+      } else {
+        // Fallback on earlier versions
+        compressionEncoder?.videoSettings = [
+            AVVideoCodecKey: AVVideoCodecH264,
+            AVVideoWidthKey: NSNumber.init(value: width!),
+            AVVideoHeightKey: NSNumber.init(value: height!),
+            AVVideoCompressionPropertiesKey: [
+                AVVideoAverageBitRateKey: NSNumber.init(value: averageBitrate),
+                AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel
+            ]
+        ]
+      }
       if !removeAudio {
         compressionEncoder?.audioSettings = [
             AVFormatIDKey: kAudioFormatMPEG4AAC,
