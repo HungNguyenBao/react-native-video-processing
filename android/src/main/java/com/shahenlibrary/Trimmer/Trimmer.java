@@ -445,6 +445,8 @@ public class Trimmer {
      cmd.add("ultrafast");
      cmd.add("-pix_fmt");
      cmd.add("yuv420p");
+     cmd.add("-max_muxing_queue_size");
+     cmd.add("1024");
 
     if (removeAudio) {
       cmd.add("-an");
